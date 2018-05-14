@@ -1,23 +1,27 @@
 package vkbot;
 
+import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
-import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
-import com.vk.api.sdk.objects.UserAuthResponse;
 import com.vk.api.sdk.objects.docs.Doc;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.photos.Photo;
+import com.vk.api.sdk.objects.UserAuthResponse;
 import com.vk.api.sdk.objects.video.Video;
 import com.vk.api.sdk.queries.messages.MessagesSendQuery;
 import com.vk.api.sdk.queries.wall.WallPostQuery;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class VKBotCore {
+public class VkBotCore {
+
+    public static final String DEFAULT_REDIRECT_URI = "https://oauth.vk.com/blank.html";
+    public static final int MAX_GET_MESSAGES_COUNT = 200;
+    static final int SLEEP_TIME = 500;
 
     int appId;
     String clientSecret;
@@ -97,6 +101,7 @@ public class VKBotCore {
                 vk.messages().markAsRead(actor).messageIds(ids).execute();
             }
         }
+        Collections.reverse(unreadMessages);
         return unreadMessages;
     }
 
@@ -122,8 +127,9 @@ public class VKBotCore {
         for (Photo photo : photos) {
             try {
                 deletePhoto(photo);
-            } catch (Exception e) {
-
+                Thread.sleep(SLEEP_TIME);
+            } catch (InterruptedException e) {
+                //
             }
         }
     }
@@ -161,18 +167,22 @@ public class VKBotCore {
         actor = new UserActor(authResponse.getUserId(), authResponse.getAccessToken());
     }
 
-    public VKBotCore() {
+    public VkBotCore() {
         appId = 0;
         clientSecret = null;
-        redirectUri = null;
+        redirectUri = DEFAULT_REDIRECT_URI;
         code = null;
+        actor = null;
+        vk = null;
     }
 
-    public VKBotCore(int appId, String clientSecret, String redirectUri, String code) {
+    public VkBotCore(int appId, String clientSecret, String redirectUri, String code) {
         this.appId = appId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
         this.code = code;
+        actor = null;
+        vk = null;
     }
 
 }

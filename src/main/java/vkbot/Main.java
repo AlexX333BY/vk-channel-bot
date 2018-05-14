@@ -1,17 +1,17 @@
 package vkbot;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 public class Main {
 
@@ -33,6 +33,12 @@ public class Main {
             System.out.format("You can get it here:\n\t%s", codeUrl);
         }
         return new Scanner(System.in).nextLine();
+    }
+
+    private static int getIntFromConsole(String message) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.format("%s: ", message);
+        return scanner.nextInt();
     }
 
     public static void main(String[] args) {
@@ -74,12 +80,22 @@ public class Main {
             code = getCode(appId, redirectUri, SCOPE, API_VERSION);
         }
 
-        VKBotCore bot;
         try {
-            bot = new VKBotCore(appId, clientSecret, redirectUri, code);
+            VkModeratorBot bot = new VkModeratorBot(appId, clientSecret, redirectUri, code);
+            bot.parseConfigFile();
             bot.authorize();
+            while (bot.getAdminId() < 1) {
+                bot.setAdminId(getIntFromConsole("Print admin ID"));
+            }
+            while (bot.getChatToListenId() < 1) {
+                bot.setChatToListenId(getIntFromConsole("Print chat ID to listen for"));
+            }
+            while (bot.getCommunityId() > -1) {
+                bot.setCommunityId(getIntFromConsole("Print community ID to post on wall"));
+            }
+            bot.start();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return;
         }
 
