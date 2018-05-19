@@ -10,19 +10,14 @@ import com.vk.api.sdk.objects.messages.MessageAttachmentType;
 import com.vk.api.sdk.objects.photos.Photo;
 import com.vk.api.sdk.objects.video.Video;
 import com.vk.api.sdk.queries.groups.GroupField;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class VkModeratorBot extends VkBotCore {
+public class VkChannelBot extends VkBotCore {
 
     static final String DEFAULT_CONFIG_FILE_NAME = "data" + System.getProperty("file.separator") + "config.cfg";
     static final String DEFAULT_SUCCESS_MESSAGE = "OK";
@@ -159,7 +154,7 @@ public class VkModeratorBot extends VkBotCore {
         this.configFileName = configFileName;
     }
 
-    public void parseConfigFile() {
+    public void parseConfigFile() throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFileName)))) {
             String line;
             Pattern adminIdPattern = Pattern.compile(String.format("^%s=(\\d+)$", ADMIN_ID_CONFIG)),
@@ -185,8 +180,6 @@ public class VkModeratorBot extends VkBotCore {
                     addChatIdToResendList(Integer.parseInt(matcher.group(1)));
                 }
             }
-        } catch (Exception e) {
-            System.err.println("Error parsing config file: " + e.getMessage());
         }
     }
 
@@ -460,7 +453,7 @@ public class VkModeratorBot extends VkBotCore {
         }
     }
 
-    public VkModeratorBot() {
+    public VkChannelBot() {
         super();
         adminId = 0;
         communityId = 0;
@@ -476,7 +469,7 @@ public class VkModeratorBot extends VkBotCore {
         unknownCommandMessage = DEFAULT_UNKNOWN_COMMAND_MESSAGE;
     }
 
-    public VkModeratorBot(int appId, String clientSecret, String redirectUri, String code) {
+    public VkChannelBot(int appId, String clientSecret, String redirectUri, String code) {
         super(appId, clientSecret, redirectUri, code);
         adminId = 0;
         communityId = 0;

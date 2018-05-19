@@ -81,17 +81,28 @@ public class Main {
         }
 
         try {
-            VkModeratorBot bot = new VkModeratorBot(appId, clientSecret, redirectUri, code);
-            bot.parseConfigFile();
+            VkChannelBot bot = new VkChannelBot(appId, clientSecret, redirectUri, code);
+            try {
+                bot.parseConfigFile();
+            } catch (IOException e) {
+                System.err.println("Error parsing config file: " + e.getMessage());
+            }
             bot.authorize();
+            boolean shouldRewrite = false;
             while (bot.getAdminId() < 1) {
                 bot.setAdminId(getIntFromConsole("Print admin ID"));
+                shouldRewrite = true;
             }
             while (bot.getChatToListenId() < 1) {
                 bot.setChatToListenId(getIntFromConsole("Print chat ID to listen for"));
+                shouldRewrite = true;
             }
             while (bot.getCommunityId() > -1) {
                 bot.setCommunityId(getIntFromConsole("Print community ID to post on wall"));
+                shouldRewrite = true;
+            }
+            if (shouldRewrite) {
+                bot.rewriteConfigFile();
             }
             bot.start();
         } catch (Exception e) {
