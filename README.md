@@ -2,7 +2,7 @@
 VK bot for publishing wall posts and sending it to channels
 
 How to compile:
-*Simply run fatJar task with Gradle
+* Simply run fatJar task with Gradle
 
 How to start:
 1. Create VK app [here](https://vk.com/editapp?act=create)
@@ -14,7 +14,7 @@ How to start:
 6. Then program will ask you for your VK ID to consider admin, chat ID to listen for materials and wall ID to post on. They will be stored at ./data/config.cfg later
 
 Command list:
-*`/subscribe` - set chat to be counted as channel-bot
-*`/unsubscribe` - remove chat from channel list
-*`/test` - test if bot is running
-*`/shutdown` - shutdown app
+* `/subscribe` - set chat to be counted as channel-bot
+* `/unsubscribe` - remove chat from channel list
+* `/test` - test if bot is running
+* `/shutdown` - shutdown app
