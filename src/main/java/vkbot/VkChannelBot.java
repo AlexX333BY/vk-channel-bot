@@ -204,7 +204,9 @@ public class VkChannelBot extends VkBotCore {
     }
 
     void rewriteConfigFile() {
-        try (PrintWriter writer = new PrintWriter(new FileOutputStream(new File(configFileName)))) {
+        File configFile = new File(configFileName);
+        configFile.getParentFile().mkdirs();
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(configFile))) {
             writer.format("%s=%d\n%s=%d\n%s=%d\n", ADMIN_ID_CONFIG, adminId, LISTEN_CHAT_ID_CONFIG, chatToListenId, COMMUNITY_ID_CONFIG, communityId);
             for (int chatId : resendChatIds) {
                 writer.format("%s=%d\n", RESEND_CHAT_ID_CONFIG, chatId);
